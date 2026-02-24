@@ -81,11 +81,6 @@
         #hp-fill { background: linear-gradient(90deg, #ff0055, #ff00ff); box-shadow: 0 0 15px var(--neon-pink); }
         #shield-fill { background: linear-gradient(90deg, #00d2ff, #3a7bd5); box-shadow: 0 0 15px var(--neon-blue); }
 
-        .joystick-container { position: absolute; bottom: 40px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; pointer-events: auto; display: none; }
-        #move-joystick { left: 40px; }
-        #aim-joystick { right: 40px; }
-        .joystick-knob { position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; background: rgba(0, 243, 255, 0.3); border: 2px solid var(--neon-blue); border-radius: 50%; transform: translate(-50%, -50%); }
-
         .glitch-text { animation: glitch 3s infinite; }
         @keyframes glitch { 0%, 100% { transform: none; } 10% { transform: skew(-0.5deg, -0.9deg); } 30% { transform: skew(0.8deg, -0.1deg); } 55% { transform: skew(-1deg, 0.2deg); } }
 
@@ -106,22 +101,19 @@
 
     <div id="wave-alert" class="orbitron font-black neon-text-blue italic uppercase tracking-tighter">PHASE 1</div>
 
-    <!-- Joystick-ok mobilhoz -->
-    <div id="move-joystick" class="joystick-container"><div class="joystick-knob"></div></div>
-    <div id="aim-joystick" class="joystick-container"><div class="joystick-knob"></div></div>
-
     <!-- Főmenü -->
     <div id="main-menu" class="menu-overlay">
         <div class="mb-8 flex flex-col items-center">
             <h1 class="orbitron text-7xl md:text-8xl font-black glitch-text tracking-tighter italic uppercase leading-none">Neon</h1>
             <h1 class="orbitron text-5xl md:text-6xl font-black neon-text-blue tracking-widest uppercase leading-none">Overdrive</h1>
-            <p class="text-[10px] tracking-[0.5em] text-slate-500 mt-2 font-bold uppercase">Cybercore Protocol v3.0</p>
+            <p class="text-[10px] tracking-[0.5em] text-slate-500 mt-2 font-bold uppercase">Cybercore Protocol v3.1</p>
         </div>
         
-        <div class="flex flex-col md:flex-row gap-4 mb-10 w-full max-w-xs md:max-w-none justify-center px-4">
+        <div class="flex flex-wrap gap-4 mb-10 w-full max-w-2xl justify-center px-4">
             <button onclick="startGame('endless')" class="neon-btn orbitron px-12 t-engage">Végtelen</button>
             <button onclick="openStory()" class="neon-btn orbitron border-pink-500 text-pink-500 hover:bg-pink-500 t-story">Történet</button>
             <button onclick="openLobby()" class="neon-btn orbitron border-purple-500 text-purple-500 hover:bg-purple-500 t-upgrades">Fejlesztések</button>
+            <button onclick="openStats()" class="neon-btn orbitron border-yellow-500 text-yellow-500 hover:bg-yellow-500 t-stats">Statisztika</button>
             <button onclick="toggleSettings(true)" class="neon-btn orbitron border-slate-500 text-slate-500 hover:bg-slate-500 t-settings">Beállítások</button>
         </div>
 
@@ -130,16 +122,38 @@
         </div>
     </div>
 
+    <!-- Statisztika Menü -->
+    <div id="stats-menu" class="menu-overlay" style="display: none;">
+        <h2 class="orbitron text-4xl font-black mb-8 neon-text-blue uppercase italic t-statsTitle">Rendszer Napló</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl px-6 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <div class="flex flex-col">
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statKills">Megsemmisítések</span>
+                <span id="stat-total-kills" class="text-3xl font-bold orbitron">0</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statMoney">Összes bevétel</span>
+                <span id="stat-total-money" class="text-3xl font-bold orbitron text-yellow-400">0</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeEndless">Végtelen rekordidő</span>
+                <span id="stat-time-endless" class="text-3xl font-bold orbitron text-blue-400">00:00:00</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeStory">Történeti játékidő</span>
+                <span id="stat-time-story" class="text-3xl font-bold orbitron text-pink-400">00:00:00</span>
+            </div>
+        </div>
+        <button onclick="closeStats()" class="neon-btn orbitron mt-10 border-slate-500 text-slate-500 t-back">Vissza</button>
+    </div>
+
     <!-- Történet Mód Menü -->
     <div id="story-menu" class="menu-overlay" style="display: none;">
         <h2 class="orbitron text-4xl font-black mb-6 neon-text-pink uppercase italic t-story">Történet</h2>
-        <div id="mission-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl px-6 max-h-[60vh] overflow-y-auto custom-scrollbar mb-8">
-            <!-- Küldetések ide kerülnek -->
-        </div>
+        <div id="mission-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl px-6 max-h-[60vh] overflow-y-auto custom-scrollbar mb-8"></div>
         <button onclick="closeStory()" class="neon-btn orbitron border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
 
-    <!-- Tech Központ / Fejlesztések -->
+    <!-- Tech Központ -->
     <div id="lobby-menu" class="menu-overlay" style="display: none;">
         <h2 class="orbitron text-4xl font-black mb-2 neon-text-blue uppercase italic t-techHub">Tech Központ</h2>
         <div class="flex items-center gap-6 mb-6">
@@ -150,7 +164,7 @@
         </div>
         
         <div class="flex gap-4 mb-6">
-            <button onclick="switchTab('player')" id="tab-player" class="neon-btn py-2 text-sm active t-chassisTab">Gépváz</button>
+            <button onclick="switchTab('player')" id="tab-player" class="neon-btn py-2 text-sm active t-chasisTab">Gépváz</button>
             <button onclick="switchTab('bots')" id="tab-bots" class="neon-btn py-2 text-sm border-purple-500 text-purple-500 t-droneTab">Drón Tech</button>
         </div>
 
@@ -160,7 +174,7 @@
         <button onclick="closeLobby()" class="neon-btn orbitron border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
 
-    <!-- Jutalmazási Folyamat (Adatfeltöltés szimuláció) -->
+    <!-- Jutalmazási Folyamat -->
     <div id="reward-modal" class="menu-overlay" style="display: none; background: rgba(0,0,0,0.98);">
         <div class="text-center">
             <i class="fas fa-satellite-dish text-7xl text-blue-400 mb-6 animate-pulse"></i>
@@ -184,7 +198,6 @@
                     <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-blue-400"><span class="t-shield">Pajzs</span><span id="shield-val">0%</span></div>
                     <div class="hud-bar"><div id="shield-fill" class="bar-fill" style="width: 0%;"></div></div>
                 </div>
-                <!-- Küldetés cél kijelző -->
                 <div id="mission-objective-ui" class="mt-4 p-3 bg-black/60 border-l-4 border-pink-500 hidden backdrop-blur-md">
                     <div class="text-[10px] text-pink-500 font-black uppercase t-objective">Feladat</div>
                     <div id="objective-text" class="text-xs font-bold text-white uppercase tracking-tight">Cél elérése...</div>
@@ -256,14 +269,31 @@
         const ctx = canvas.getContext('2d');
         const appId = "neon-overdrive-v3-final";
 
-        // Állapot betöltése
-        let stats = JSON.parse(localStorage.getItem(appId + '_stats')) || {
+        // Állapot betöltése és migráció (adatellenőrzés)
+        let savedStats = JSON.parse(localStorage.getItem(appId + '_stats'));
+        let stats = {
             coins: 0,
             upgrades: { hp: 1, fire: 1, speed: 1, shield: 1, magnet: 1, damage: 1 },
             botTech: { unlocked: false, count: 1, hp: 1, damage: 1 },
             storyProgress: 0,
-            settings: { volume: 50, lang: 'hu' }
+            settings: { volume: 50, lang: 'hu' },
+            history: { totalKills: 0, timeEndless: 0, timeStory: 0, allTimeEarnings: 0 }
         };
+
+        // Adatmigráció: Összefésüljük a mentést az alapértelmezett sablonnal
+        if (savedStats) {
+            Object.keys(savedStats).forEach(key => {
+                if (typeof savedStats[key] === 'object' && savedStats[key] !== null && !Array.isArray(savedStats[key])) {
+                    stats[key] = { ...stats[key], ...savedStats[key] };
+                } else {
+                    stats[key] = savedStats[key];
+                }
+            });
+        }
+        // Biztosítjuk, hogy a history objektum létezik (különösen a totalKills hiba miatt)
+        if (!stats.history) {
+            stats.history = { totalKills: 0, timeEndless: 0, timeStory: 0, allTimeEarnings: 0 };
+        }
 
         const translations = {
             hu: {
@@ -275,7 +305,9 @@
                 uplink: "Adatkapcsolat kiépítése...", uplinkDesc: "Titkosított adatfolyam fogadása kreditekért cserébe.",
                 uplinkBtn: "ADATKAPCSOLAT (+300 CR)", chasisTab: "Gépváz", droneTab: "Drón Tech",
                 phase: "FÁZIS", level: "SZINT", success: "KÜLDETÉS TELJESÍTVE", victory: "GYŐZELEM",
-                done: "TELJESÍTVE", launch: "Indítás", unlock: "Feloldás", drUnlockText: "Drón Technológia Lezárva"
+                done: "TELJESÍTVE", launch: "Indítás", unlock: "Feloldás", drUnlockText: "Drón Technológia Lezárva",
+                stats: "Statisztika", statsTitle: "Rendszer Napló", statKills: "Megsemmisítések", statMoney: "Összes bevétel",
+                statTimeEndless: "Végtelen rekordidő", statTimeStory: "Történeti játékidő"
             },
             en: {
                 engage: "Endless", story: "Story Mode", upgrades: "Upgrades", settings: "Settings",
@@ -286,7 +318,9 @@
                 uplink: "Establishing Uplink...", uplinkDesc: "Receiving encrypted data stream for credits.",
                 uplinkBtn: "DATA UPLINK (+300 CR)", chasisTab: "Chassis", droneTab: "Drone Tech",
                 phase: "PHASE", level: "LVL", success: "MISSION SUCCESS", victory: "VICTORY",
-                done: "COMPLETED", launch: "Launch", unlock: "Unlock", drUnlockText: "Drone Tech Locked"
+                done: "COMPLETED", launch: "Launch", unlock: "Unlock", drUnlockText: "Drone Tech Locked",
+                stats: "Statistics", statsTitle: "System Logs", statKills: "Total Destructions", statMoney: "All-time Earnings",
+                statTimeEndless: "Endless Time Log", statTimeStory: "Story Time Log"
             }
         };
 
@@ -315,7 +349,7 @@
 
         // Játék Változók
         let isRunning = false, isPaused = false, frameCount = 0, lastTime = 0, score = 0, sessionCoins = 0, level = 1;
-        let gameMode = 'endless', currentMission = null, missionCounter = 0, shake = 0;
+        let gameMode = 'endless', currentMission = null, missionCounter = 0, shake = 0, sessionStartTime = 0;
         let player, projectiles = [], enemies = [], particles = [], pickups = [], bots = [], botRespawnQueue = [];
         let keys = {}, mouse = { x: 0, y: 0, down: false };
         let audioCtx = null;
@@ -347,6 +381,13 @@
             localStorage.setItem(appId + '_stats', JSON.stringify(stats)); 
             updateUI(); 
         }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
         
         function updateUI() {
             document.getElementById('global-coins').innerText = stats.coins.toLocaleString();
@@ -354,7 +395,6 @@
             const lang = stats.settings.lang;
             const t = translations[lang];
 
-            // Fordítások frissítése a DOM-ban
             document.querySelectorAll('[class*="t-"]').forEach(el => {
                 const classList = Array.from(el.classList);
                 const tClass = classList.find(c => c.startsWith('t-'));
@@ -367,17 +407,20 @@
             document.getElementById('vol-val').innerText = stats.settings.volume + '%';
             document.getElementById('volume-slider').value = stats.settings.volume;
             
-            // Nyelvváltó gombok vizuális frissítése
             document.getElementById('lang-hu').className = `flex-1 py-2 border rounded transition-all ${lang === 'hu' ? 'border-blue-500 bg-blue-500/20 text-blue-400' : 'border-slate-700 bg-white/5'}`;
             document.getElementById('lang-en').className = `flex-1 py-2 border rounded transition-all ${lang === 'en' ? 'border-blue-500 bg-blue-500/20 text-blue-400' : 'border-slate-700 bg-white/5'}`;
 
-            // Ha nyitva vannak a listák, azokat is frissíteni kell
-            if (document.getElementById('lobby-menu').style.display === 'flex') {
-                renderUpgrades();
-            }
-            if (document.getElementById('story-menu').style.display === 'flex') {
-                renderStoryMissions();
-            }
+            if (document.getElementById('lobby-menu').style.display === 'flex') renderUpgrades();
+            if (document.getElementById('story-menu').style.display === 'flex') renderStoryMissions();
+            if (document.getElementById('stats-menu').style.display === 'flex') renderStats();
+        }
+
+        function renderStats() {
+            const s = stats.history || { totalKills: 0, timeEndless: 0, timeStory: 0, allTimeEarnings: 0 };
+            document.getElementById('stat-total-kills').innerText = s.totalKills.toLocaleString();
+            document.getElementById('stat-total-money').innerText = s.allTimeEarnings.toLocaleString();
+            document.getElementById('stat-time-endless').innerText = formatTime(s.timeEndless);
+            document.getElementById('stat-time-story').innerText = formatTime(s.timeStory);
         }
 
         function renderUpgrades() {
@@ -432,25 +475,23 @@
 
         function unlockBots() { if (stats.coins >= 3000) { stats.coins -= 3000; stats.botTech.unlocked = true; sfx.upgrade(); save(); } }
 
-        // --- Reward / Ad Sim ---
         function startRewardProcess() {
             document.getElementById('reward-modal').style.display = 'flex';
             let progress = 0;
             const bar = document.getElementById('reward-bar');
-            // 15 másodperces várakozás: 15000ms / 100 lépés = 150ms lépésenként
             const interval = setInterval(() => {
                 progress += 1;
                 bar.style.width = progress + '%';
                 if (progress >= 100) {
                     clearInterval(interval);
                     stats.coins += 300;
+                    stats.history.allTimeEarnings += 300;
                     save();
                     document.getElementById('reward-modal').style.display = 'none';
                 }
             }, 150);
         }
 
-        // --- Story Mód ---
         function renderStoryMissions() {
             const list = document.getElementById('mission-list');
             list.innerHTML = '';
@@ -477,14 +518,12 @@
             });
         }
 
-        function openStory() {
-            document.getElementById('main-menu').style.display = 'none';
-            document.getElementById('story-menu').style.display = 'flex';
-            renderStoryMissions();
-        }
+        function openStory() { document.getElementById('main-menu').style.display = 'none'; document.getElementById('story-menu').style.display = 'flex'; renderStoryMissions(); }
         function closeStory() { document.getElementById('story-menu').style.display = 'none'; document.getElementById('main-menu').style.display = 'flex'; }
+        function openStats() { document.getElementById('main-menu').style.display = 'none'; document.getElementById('stats-menu').style.display = 'flex'; renderStats(); }
+        function closeStats() { document.getElementById('stats-menu').style.display = 'none'; document.getElementById('main-menu').style.display = 'flex'; }
 
-        // --- Játék Objektumok (Osztályok) ---
+        // --- Játék Objektumok ---
         class Player {
             constructor() {
                 this.x = canvas.width / 2; this.y = canvas.height / 2; this.radius = 18;
@@ -493,7 +532,8 @@
                 this.maxShield = (stats.upgrades.shield - 1) * 40;
                 this.shield = this.maxShield;
                 this.baseSpeed = 4.5 + (stats.upgrades.speed - 1) * 0.45;
-                this.fireRate = Math.max(7, 22 - (stats.upgrades.fire - 1) * 1.5);
+                // Lövés sebességét még lassabbra vettük (alapérték 30 helyett 42)
+                this.fireRate = Math.max(12, 42 - (stats.upgrades.fire - 1) * 2.2);
                 this.magnetRadius = 80 + (stats.upgrades.magnet - 1) * 45;
                 this.dmgMult = 1 + (stats.upgrades.damage - 1) * 0.4;
                 this.angle = 0; this.lastShot = 0; this.lastRegen = 0;
@@ -521,7 +561,6 @@
                     this.shield = Math.min(this.maxShield, this.shield + (0.06 * dt));
                 }
 
-                // HUD frissítés
                 document.getElementById('hp-fill').style.width = `${(this.hp / this.maxHp) * 100}%`;
                 document.getElementById('hp-val').innerText = `${Math.ceil((this.hp / this.maxHp) * 100)}%`;
                 document.getElementById('shield-fill').style.width = this.maxShield > 0 ? `${(this.shield / this.maxShield) * 100}%` : '0%';
@@ -559,34 +598,57 @@
 
         class Bot {
             constructor(index) {
-                this.index = index; this.radius = 10;
+                this.index = index; this.radius = 11;
                 this.maxHp = 60 + (stats.botTech.hp - 1) * 25;
                 this.hp = this.maxHp;
                 this.dmgMult = 0.6 + (stats.botTech.damage - 1) * 0.35;
-                this.fireRate = 55; this.lastShot = 0;
                 this.x = player.x; this.y = player.y;
-                this.orbitDist = 65; this.angleOffset = (Math.PI * 2 / stats.botTech.count) * index;
-                this.type = index % 2; // 0: Keringő, 1: Támadó
+                
+                // Bot Típusok: 0 - Keringő (Lila), 1 - Random Roamer (Kék), 2 - Aggressive Melee (Sárga)
+                this.type = index % 3;
+                
+                this.targetPos = { x: this.x, y: this.y };
+                this.roamTimer = 0;
+                this.fireRate = 60;
+                this.lastShot = Math.random() * 50;
             }
             update(dt) {
-                if (this.type === 0) {
-                    const tx = player.x + Math.cos(frameCount * 0.04 + this.angleOffset) * this.orbitDist;
-                    const ty = player.y + Math.sin(frameCount * 0.04 + this.angleOffset) * this.orbitDist;
+                if (this.type === 0) { // Keringő drón (Orbit Bot)
+                    const orbitDist = 70;
+                    const angleOffset = (Math.PI * 2 / stats.botTech.count) * this.index;
+                    const tx = player.x + Math.cos(frameCount * 0.04 + angleOffset) * orbitDist;
+                    const ty = player.y + Math.sin(frameCount * 0.04 + angleOffset) * orbitDist;
                     this.x += (tx - this.x) * 0.1 * dt; this.y += (ty - this.y) * 0.1 * dt;
-                } else {
-                    let near = null, md = 350;
+                    this.shootLogic();
+                } 
+                else if (this.type === 1) { // Random Roamer (Kék Bot)
+                    this.roamTimer -= dt;
+                    if (this.roamTimer <= 0) {
+                        this.targetPos = { x: Math.random() * canvas.width, y: Math.random() * canvas.height };
+                        this.roamTimer = 180 + Math.random() * 120;
+                    }
+                    const a = Math.atan2(this.targetPos.y - this.y, this.targetPos.x - this.x);
+                    this.x += Math.cos(a) * 3 * dt; this.y += Math.sin(a) * 3 * dt;
+                    this.shootLogic();
+                }
+                else { // Aggressive Melee (Sárga Bot)
+                    let near = null, md = 600;
                     enemies.forEach(e => { let d = dist(this.x, this.y, e.x, e.y); if (d < md) { md = d; near = e; } });
                     if (near) {
                         const a = Math.atan2(near.y - this.y, near.x - this.x);
-                        this.x += Math.cos(a) * 3 * dt; this.y += Math.sin(a) * 3 * dt;
+                        this.x += Math.cos(a) * 6 * dt; this.y += Math.sin(a) * 6 * dt;
+                        if (md < this.radius + near.radius) {
+                            near.hp -= 5 * this.dmgMult;
+                            this.hp -= 2; // Ütközéskor sérül
+                            if (frameCount % 5 === 0) sfx.hit();
+                        }
                     } else {
                         const a = Math.atan2(player.y - this.y, player.x - this.x);
-                        this.x += (player.x + Math.cos(this.angleOffset)*50 - this.x) * 0.05 * dt;
-                        this.y += (player.y + Math.sin(this.angleOffset)*50 - this.y) * 0.05 * dt;
+                        this.x += Math.cos(a) * 4 * dt; this.y += Math.sin(a) * 4 * dt;
                     }
                 }
-
-                // Tüzelés
+            }
+            shootLogic() {
                 let target = null, mdS = 400;
                 enemies.forEach(e => { let d = dist(this.x, this.y, e.x, e.y); if (d < mdS) { mdS = d; target = e; } });
                 if (target && frameCount - this.lastShot > this.fireRate) {
@@ -596,9 +658,17 @@
                 }
             }
             draw() {
+                const colors = ['#bc13fe', '#00f3ff', '#ff8c00'];
                 ctx.save(); ctx.translate(this.x, this.y);
-                ctx.shadowBlur = 10; ctx.shadowColor = '#bc13fe'; ctx.fillStyle = '#bc13fe';
-                ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, 7); ctx.fill();
+                ctx.shadowBlur = 12; ctx.shadowColor = colors[this.type]; ctx.fillStyle = colors[this.type];
+                ctx.beginPath();
+                if (this.type === 2) { 
+                    ctx.rotate(frameCount * 0.1);
+                    ctx.moveTo(12, 0); ctx.lineTo(-8, -8); ctx.lineTo(-8, 8);
+                } else {
+                    ctx.arc(0, 0, this.radius, 0, 7);
+                }
+                ctx.fill();
                 ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 3, 0, 7); ctx.fill();
                 ctx.restore();
             }
@@ -625,9 +695,7 @@
                 const d = dist(this.x, this.y, target.x, target.y);
 
                 if (this.canShoot && d < 450 && d > 200) {
-                    if (frameCount - this.lastShot > this.fireRate) {
-                        this.shoot(a); this.lastShot = frameCount;
-                    }
+                    if (frameCount - this.lastShot > this.fireRate) { this.shoot(a); this.lastShot = frameCount; }
                 } else {
                     this.x += Math.cos(a) * this.speed * dt; this.y += Math.sin(a) * this.speed * dt;
                 }
@@ -666,7 +734,13 @@
                         if (dist(this.x, this.y, e.x, e.y) < e.radius + this.radius) {
                             e.hp -= this.damage; this.life = 0;
                             if (e.hp <= 0) {
-                                score += 100; sessionCoins += e.coinValue; sfx.explosion();
+                                score += 100; sessionCoins += e.coinValue;
+                                // Statisztika frissítés
+                                if (stats.history) {
+                                    stats.history.totalKills++;
+                                    stats.history.allTimeEarnings += e.coinValue;
+                                }
+                                sfx.explosion();
                                 createExplosion(e.x, e.y, e.color, e.isBoss ? 40 : 15);
                                 if (Math.random() < 0.25) pickups.push(new Pickup(e.x, e.y, Math.random() < 0.5 ? 'H' : (Math.random() < 0.8 ? 'O' : 'T')));
                                 if (gameMode === 'story') {
@@ -731,9 +805,7 @@
         function createExplosion(x, y, c, count = 10) { for(let i=0; i<count; i++) particles.push(new Particle(x, y, c)); }
         function dist(x1, y1, x2, y2) { return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2); }
 
-        // --- Játékmenet Logika ---
         function checkProgression() {
-            const lang = stats.settings.lang;
             if (gameMode === 'endless') {
                 const next = Math.floor(score / 5000) + 1;
                 if (next > level) { level = next; updateLevelTag(); showWaveAlert(level); }
@@ -776,10 +848,10 @@
         function startGame(mode, missionIdx = null) {
             initAudio(); gameMode = mode; isRunning = true; isPaused = false;
             frameCount = 0; score = 0; sessionCoins = 0; level = 1;
+            sessionStartTime = Date.now();
             player = new Player(); enemies = []; projectiles = []; particles = []; pickups = []; bots = []; botRespawnQueue = [];
             
             if (stats.botTech.unlocked) { for (let i = 0; i < stats.botTech.count; i++) bots.push(new Bot(i)); }
-
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('story-menu').style.display = 'none';
             document.getElementById('game-over').style.display = 'none';
@@ -801,6 +873,8 @@
 
         function winMission() {
             isRunning = false;
+            const timeDiff = (Date.now() - sessionStartTime) / 1000;
+            if (stats.history) stats.history.timeStory += timeDiff;
             if (currentMission.id === stats.storyProgress) stats.storyProgress++;
             stats.coins += currentMission.reward + sessionCoins;
             save();
@@ -808,7 +882,14 @@
         }
 
         function endGame() {
-            isRunning = false; stats.coins += sessionCoins; save();
+            isRunning = false;
+            const timeDiff = (Date.now() - sessionStartTime) / 1000;
+            if (stats.history) {
+                if (gameMode === 'endless') stats.history.timeEndless += timeDiff;
+                else stats.history.timeStory += timeDiff;
+            }
+            stats.coins += sessionCoins; 
+            save();
             showEndScreen(translations[stats.settings.lang].failure, "#ff0055");
         }
 
@@ -824,7 +905,20 @@
         }
 
         function restartGame() { if(gameMode === 'story') startGame('story', currentMission.id); else startGame('endless'); }
-        function returnToMenu() { document.getElementById('game-over').style.display = 'none'; document.getElementById('pause-menu').style.display = 'none'; isRunning = false; document.getElementById('main-menu').style.display = 'flex'; updateUI(); }
+        function returnToMenu() { 
+            const timeDiff = (Date.now() - sessionStartTime) / 1000;
+            if (isRunning && stats.history) {
+                if (gameMode === 'endless') stats.history.timeEndless += timeDiff;
+                else stats.history.timeStory += timeDiff;
+                stats.coins += sessionCoins;
+                save();
+            }
+            document.getElementById('game-over').style.display = 'none'; 
+            document.getElementById('pause-menu').style.display = 'none'; 
+            isRunning = false; 
+            document.getElementById('main-menu').style.display = 'flex'; 
+            updateUI(); 
+        }
 
         function loop(timestamp) {
             if (!isRunning || isPaused) return;
@@ -833,14 +927,12 @@
             frameCount++;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Küldetés frissítés (Túlélés)
             if (gameMode === 'story' && currentMission.goal === 'survive') {
                 missionCounter = Math.floor(frameCount / 60);
                 document.getElementById('objective-text').innerText = `${translations[stats.settings.lang].objective}: ${missionCounter} / ${currentMission.value}s`;
                 if (missionCounter >= currentMission.value) winMission();
             }
 
-            // Drón újjáéledés
             botRespawnQueue.forEach((item, idx) => {
                 item.timer -= dt;
                 if (item.timer <= 0) { bots.push(new Bot(item.index)); botRespawnQueue.splice(idx, 1); }
@@ -848,10 +940,8 @@
 
             ctx.save();
             if(shake > 0){ ctx.translate((Math.random()-0.5)*shake, (Math.random()-0.5)*shake); shake *= 0.9; }
-            
             spawn();
             player.update(dt); player.draw();
-            
             bots.forEach((b, i) => { 
                 b.update(dt); b.draw(); 
                 if (b.hp <= 0) { 
@@ -860,20 +950,16 @@
                     bots.splice(i, 1); sfx.explosion(); 
                 } 
             });
-            
             if (stats.botTech.unlocked) document.getElementById('bot-status').innerText = `DRÓNOK: ${bots.length}/${stats.botTech.count}`;
-
             enemies.forEach((e, i) => { e.update(dt); e.draw(); if(e.hp <= 0) enemies.splice(i, 1); });
             projectiles.forEach((p, i) => { p.update(dt); p.draw(); if(p.life <= 0) projectiles.splice(i, 1); });
             pickups.forEach((p, i) => { if(p.update(dt)) pickups.splice(i, 1); else p.draw(); });
             particles.forEach((p, i) => { p.update(dt); p.draw(); if(p.life <= 0) particles.splice(i, 1); });
-
             ctx.restore();
             if (player.hp <= 0) endGame();
             requestAnimationFrame(loop);
         }
 
-        // --- Vezérlés & UI ---
         window.onkeydown = e => { keys[e.code] = true; if(e.code === 'Escape') togglePause(); };
         window.onkeyup = e => keys[e.code] = false;
         window.onmousemove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
@@ -884,10 +970,7 @@
         function togglePause() { if(!isRunning) return; isPaused = !isPaused; document.getElementById('pause-menu').style.display = isPaused ? 'flex' : 'none'; document.getElementById('pause-icon').className = isPaused ? 'fas fa-play' : 'fas fa-pause'; if(!isPaused) { lastTime = performance.now(); requestAnimationFrame(loop); } }
         function toggleSettings(show) { document.getElementById('settings-menu').style.display = show ? 'flex' : 'none'; }
         function updateVolume(v) { stats.settings.volume = parseInt(v); save(); }
-        function setLanguage(l) { 
-            stats.settings.lang = l; 
-            save(); 
-        }
+        function setLanguage(l) { stats.settings.lang = l; save(); }
         function openLobby() { document.getElementById('main-menu').style.display = 'none'; document.getElementById('lobby-menu').style.display = 'flex'; renderUpgrades(); }
         function closeLobby() { document.getElementById('lobby-menu').style.display = 'none'; document.getElementById('main-menu').style.display = 'flex'; }
         function switchTab(t) { document.getElementById('player-upgrades').style.display = t === 'player' ? 'grid' : 'none'; document.getElementById('bot-upgrades').style.display = t === 'bots' ? 'grid' : 'none'; document.getElementById('tab-player').classList.toggle('active', t === 'player'); document.getElementById('tab-bots').classList.toggle('active', t === 'bots'); }
