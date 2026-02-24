@@ -197,62 +197,127 @@
 
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #222;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
     </style>
 </head>
 <body class="custom-scrollbar">
 
     <canvas id="game-canvas"></canvas>
 
-    <div id="wave-alert" class="orbitron font-black neon-text-blue italic uppercase tracking-tighter">WAVE 1</div>
+    <div id="wave-alert" class="orbitron font-black neon-text-blue italic uppercase tracking-tighter">PHASE 1</div>
 
     <div id="move-joystick" class="joystick-container"><div class="joystick-knob"></div></div>
     <div id="aim-joystick" class="joystick-container"><div class="joystick-knob"></div></div>
 
     <!-- Főmenü -->
     <div id="main-menu" class="menu-overlay">
+        <!-- Info Gomb -->
+        <button onclick="toggleInfo(true)" class="absolute top-6 right-6 text-2xl text-slate-500 hover:text-white transition-colors pointer-events-auto">
+            <i class="fas fa-info-circle"></i>
+        </button>
+
         <div class="mb-4 flex flex-col items-center">
             <h1 class="orbitron text-6xl md:text-8xl font-black glitch-text tracking-tighter italic uppercase leading-none">Neon</h1>
             <h1 class="orbitron text-4xl md:text-6xl font-black neon-text-blue tracking-widest uppercase leading-none">Overdrive</h1>
-            <p class="text-[10px] tracking-[0.5em] text-slate-500 mt-2 font-bold uppercase">Cybercore Protocol v2.6</p>
+            <p class="text-[10px] tracking-[0.5em] text-slate-500 mt-2 font-bold uppercase">Cybercore Protocol v2.7</p>
         </div>
         
-        <div class="flex flex-col md:flex-row gap-6 mb-10">
-            <button onclick="startGame()" class="neon-btn orbitron px-12">Engage</button>
-            <button onclick="openLobby()" class="neon-btn orbitron border-purple-500 text-purple-500 hover:bg-purple-500">Upgrades</button>
+        <div class="flex flex-col md:flex-row gap-4 mb-10 w-full max-w-xs md:max-w-none justify-center px-4">
+            <button onclick="startGame()" class="neon-btn orbitron px-12 t-engage">Engage</button>
+            <button onclick="openLobby()" class="neon-btn orbitron border-purple-500 text-purple-500 hover:bg-purple-500 t-upgrades">Upgrades</button>
+            <button onclick="toggleSettings(true)" class="neon-btn orbitron border-slate-500 text-slate-500 hover:bg-slate-500 t-settings">Settings</button>
         </div>
 
         <div class="currency-display orbitron text-2xl mb-8 flex items-center">
-            <i class="fas fa-coins mr-3 text-yellow-400"></i> <span id="global-coins">0</span> <span class="text-xs ml-2 opacity-60">CREDITS</span>
+            <i class="fas fa-coins mr-3 text-yellow-400"></i> <span id="global-coins">0</span> <span class="text-xs ml-2 opacity-60 t-credits-unit">CREDITS</span>
         </div>
+    </div>
+
+    <!-- Info Overlay -->
+    <div id="info-overlay" class="menu-overlay" style="display: none; background: rgba(0,0,0,0.95);">
+        <h2 class="orbitron text-3xl font-black mb-8 neon-text-blue uppercase italic t-creators">Creators</h2>
+        <div class="flex flex-col gap-6 items-center text-center">
+            <div>
+                <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">Lead Developer</p>
+                <p class="text-2xl orbitron font-bold">Szakii0</p>
+            </div>
+            <div>
+                <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">Systems Architect</p>
+                <p class="text-2xl orbitron font-bold">Bl4ver</p>
+            </div>
+        </div>
+        <button onclick="toggleInfo(false)" class="neon-btn orbitron mt-12 border-slate-500 text-slate-500 t-back">Back</button>
+    </div>
+
+    <!-- Beállítások -->
+    <div id="settings-menu" class="menu-overlay" style="display: none;">
+        <h2 class="orbitron text-3xl font-black mb-10 neon-text-blue uppercase italic t-settings">Settings</h2>
+        
+        <div class="w-full max-w-sm flex flex-col gap-8 pointer-events-auto px-6">
+            <div class="flex flex-col gap-3">
+                <div class="flex justify-between uppercase font-bold text-xs tracking-widest">
+                    <span class="t-volume">Volume</span>
+                    <span id="vol-val">50%</span>
+                </div>
+                <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="updateVolume(this.value)">
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="uppercase font-bold text-xs tracking-widest t-language">Language</div>
+                <div class="flex gap-2">
+                    <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">English</button>
+                    <button onclick="setLanguage('hu')" id="lang-hu" class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">Magyar</button>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="toggleSettings(false)" class="neon-btn orbitron mt-12 border-slate-500 text-slate-500 t-back">Back</button>
     </div>
 
     <!-- Fejlesztési Menü -->
     <div id="lobby-menu" class="menu-overlay" style="display: none;">
-        <h2 class="orbitron text-3xl font-black mb-2 neon-text-blue uppercase italic">Tech Hub</h2>
+        <h2 class="orbitron text-3xl font-black mb-2 neon-text-blue uppercase italic t-tech-hub">Tech Hub</h2>
         
         <div class="currency-display orbitron text-xl mb-6">
             <i class="fas fa-coins mr-2 text-yellow-400"></i> <span id="lobby-coins">0</span>
         </div>
 
         <div class="flex gap-4 mb-8">
-            <button onclick="switchTab('player')" id="tab-player" class="tab-btn active uppercase">Chassis</button>
+            <button onclick="switchTab('player')" id="tab-player" class="tab-btn active uppercase t-tab-chassis">Chassis</button>
             <button onclick="switchTab('bots')" id="tab-bots" class="tab-btn uppercase">Bot Tech <i id="lock-icon" class="fas fa-lock ml-2 text-xs opacity-50"></i></button>
         </div>
 
         <div id="player-upgrades" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-h-[55vh] overflow-y-auto px-6 w-full max-w-6xl pointer-events-auto custom-scrollbar"></div>
         <div id="bot-upgrades" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-h-[50vh] overflow-y-auto px-6 w-full max-w-6xl pointer-events-auto" style="display: none;"></div>
 
-        <button onclick="closeLobby()" class="neon-btn orbitron border-red-500 text-red-500 hover:bg-red-500">Back</button>
+        <button onclick="closeLobby()" class="neon-btn orbitron border-red-500 text-red-500 hover:bg-red-500 t-back">Back</button>
     </div>
 
     <!-- Game Over -->
     <div id="game-over" class="menu-overlay" style="display: none; opacity: 0;">
-        <h2 class="orbitron text-5xl font-black mb-4 text-red-500 uppercase italic">Core Failure</h2>
+        <h2 class="orbitron text-5xl font-black mb-4 text-red-500 uppercase italic t-failure">Core Failure</h2>
         <div id="final-score" class="text-3xl mb-2 orbitron">000,000</div>
         <div id="session-coins" class="text-xl mb-12 orbitron text-yellow-400">+0 CREDITS</div>
         <div class="flex flex-col gap-4 w-full max-w-xs">
-            <button onclick="startGame()" class="neon-btn orbitron w-full">Reboot</button>
-            <button onclick="returnToMenu()" class="neon-btn orbitron border-slate-500 text-slate-500 w-full">Terminal</button>
+            <button onclick="startGame()" class="neon-btn orbitron w-full t-reboot">Reboot</button>
+            <button onclick="returnToMenu()" class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-terminal">Terminal</button>
         </div>
     </div>
 
@@ -261,11 +326,11 @@
         <div class="flex justify-between items-start w-full pointer-events-none">
             <div class="flex flex-col gap-3">
                 <div class="space-y-1">
-                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-pink-500"><span>Integrity</span><span id="hp-val">100%</span></div>
+                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-pink-500"><span class="t-integrity">Integrity</span><span id="hp-val">100%</span></div>
                     <div class="hud-bar"><div id="hp-fill" class="bar-fill" style="width: 100%;"></div></div>
                 </div>
                 <div class="space-y-1">
-                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-blue-400"><span>Shield</span><span id="shield-val">0%</span></div>
+                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-blue-400"><span class="t-shield">Shield</span><span id="shield-val">0%</span></div>
                     <div class="hud-bar"><div id="shield-fill" class="bar-fill" style="width: 0%;"></div></div>
                 </div>
                 <div id="powerup-timer-container" class="mt-2 hidden">
@@ -280,10 +345,26 @@
             </div>
 
             <div class="flex flex-col items-end gap-2">
-                <div class="text-2xl font-black text-white orbitron bg-white/5 px-4 py-1 rounded-sm skew-x-[-10deg]" id="level-display">LVL 01</div>
-                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">THREAT: <span id="wave-progress" class="text-red-500">1</span></div>
+                <div class="flex gap-2">
+                    <!-- Pause Gomb -->
+                    <button onclick="togglePause()" class="pointer-events-auto bg-white/5 border border-white/10 w-10 h-10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                        <i id="pause-icon" class="fas fa-pause"></i>
+                    </button>
+                    <div class="text-2xl font-black text-white orbitron bg-white/5 px-4 py-1 rounded-sm skew-x-[-10deg]" id="level-display">LVL 01</div>
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider"><span class="t-threat">Threat</span>: <span id="wave-progress" class="text-red-500">1</span></div>
                 <div class="text-[9px] text-purple-400 uppercase font-black tracking-tighter" id="bot-status"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-menu" class="menu-overlay" style="display: none;">
+        <h2 class="orbitron text-4xl font-black mb-10 text-white uppercase italic t-paused">Protocol Paused</h2>
+        <div class="flex flex-col gap-4 w-full max-w-xs px-6">
+            <button onclick="togglePause()" class="neon-btn orbitron w-full t-resume">Resume</button>
+            <button onclick="toggleSettings(true)" class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-settings">Settings</button>
+            <button onclick="returnToMenu()" class="neon-btn orbitron border-red-500 text-red-500 w-full t-terminal">Terminal</button>
         </div>
     </div>
 
@@ -300,11 +381,68 @@
         const levelEl = document.getElementById('level-display');
         const menu = document.getElementById('main-menu');
         const lobby = document.getElementById('lobby-menu');
+        const settingsMenu = document.getElementById('settings-menu');
+        const infoOverlay = document.getElementById('info-overlay');
         const gameOverScreen = document.getElementById('game-over');
+        const pauseMenu = document.getElementById('pause-menu');
         const hud = document.getElementById('hud');
         const waveAlert = document.getElementById('wave-alert');
         const powerupTimer = document.getElementById('powerup-timer-container');
         const powerupFill = document.getElementById('powerup-fill');
+
+        // Fordítások
+        const translations = {
+            en: {
+                engage: "Engage",
+                upgrades: "Upgrades",
+                settings: "Settings",
+                creditsUnit: "Credits",
+                back: "Back",
+                creators: "Creators",
+                volume: "Volume",
+                language: "Language",
+                techHub: "Tech Hub",
+                tabChassis: "Chassis",
+                failure: "Core Failure",
+                reboot: "Reboot",
+                terminal: "Terminal",
+                integrity: "Integrity",
+                shield: "Shield",
+                threat: "Threat",
+                paused: "Protocol Paused",
+                resume: "Resume",
+                cost: "Cost",
+                droneUplink: "Drone Uplink",
+                locked: "Locked",
+                enable: "Enable",
+                phase: "Phase"
+            },
+            hu: {
+                engage: "Kezdés",
+                upgrades: "Fejlesztések",
+                settings: "Beállítások",
+                creditsUnit: "Kredit",
+                back: "Vissza",
+                creators: "Készítők",
+                volume: "Hangerő",
+                language: "Nyelv",
+                techHub: "Fejlesztések",
+                tabChassis: "Gépváz",
+                failure: "Rendszerhiba",
+                reboot: "Újraindítás",
+                terminal: "Menü",
+                integrity: "Integritás",
+                shield: "Pajzs",
+                threat: "Veszély",
+                paused: "Szünet",
+                resume: "Folytatás",
+                cost: "Ár",
+                droneUplink: "Drón Kapcsolat",
+                locked: "Lezárva",
+                enable: "Aktiválás",
+                phase: "Fázis"
+            }
+        };
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'neon-overdrive-v2';
         let stats = {
@@ -314,32 +452,35 @@
             },
             botTech: JSON.parse(localStorage.getItem(appId + '_bottech')) || {
                 unlocked: false, count: 1, hp: 1, damage: 1
+            },
+            settings: JSON.parse(localStorage.getItem(appId + '_settings')) || {
+                volume: 50, lang: 'hu'
             }
         };
 
         const upgradeData = [
-            { id: 'hp', title: 'Hull Plating', desc: 'Increases maximum durability.', baseCost: 500 },
-            { id: 'fire', title: 'Pulse Capacitor', desc: 'Reduces weapon recharge delay.', baseCost: 750 },
-            { id: 'speed', title: 'Ion Thrusters', desc: 'Increases maneuverability.', baseCost: 400 },
-            { id: 'shield', title: 'Hardlight Shield', desc: 'Auto-regenerating energy barrier.', baseCost: 600 },
-            { id: 'magnet', title: 'Void Magnet', desc: 'Attracts credits from distance.', baseCost: 1000 },
-            { id: 'damage', title: 'Neutron Slugs', desc: 'Higher impact projectile force.', baseCost: 800 },
+            { id: 'hp', title: { en: 'Hull Plating', hu: 'Páncélzat' }, desc: { en: 'Increases maximum durability.', hu: 'Növeli a maximális életerőt.' }, baseCost: 500 },
+            { id: 'fire', title: { en: 'Pulse Capacitor', hu: 'Impulzus Kondenzátor' }, desc: { en: 'Reduces weapon recharge delay.', hu: 'Gyorsabb tüzelési sebesség.' }, baseCost: 750 },
+            { id: 'speed', title: { en: 'Ion Thrusters', hu: 'Ion Hajtómű' }, desc: { en: 'Increases maneuverability.', hu: 'Gyorsabb mozgás.' }, baseCost: 400 },
+            { id: 'shield', title: { en: 'Hardlight Shield', hu: 'Fénypajzs' }, desc: { en: 'Auto-regenerating energy barrier.', hu: 'Öntöltő védőpajzs.' }, baseCost: 600 },
+            { id: 'magnet', title: { en: 'Void Magnet', hu: 'Űrmágnes' }, desc: { en: 'Attracts credits from distance.', hu: 'Messzebbről vonzza a krediteket.' }, baseCost: 1000 },
+            { id: 'damage', title: { en: 'Neutron Slugs', hu: 'Neutron Lövedék' }, desc: { en: 'Higher impact projectile force.', hu: 'Nagyobb sebzés.' }, baseCost: 800 },
         ];
 
         const botUpgradeData = [
-            { id: 'count', title: 'Drone Squad', desc: 'Increases active bot limit.', baseCost: 2000 },
-            { id: 'hp', title: 'Drone Armor', desc: 'Increases drone durability.', baseCost: 1000 },
-            { id: 'damage', title: 'Drone Ordnance', desc: 'Higher drone firepower.', baseCost: 1500 },
+            { id: 'count', title: { en: 'Drone Squad', hu: 'Drón Osztag' }, desc: { en: 'Increases active bot limit.', hu: 'Több aktív drón egyszerre.' }, baseCost: 2000 },
+            { id: 'hp', title: { en: 'Drone Armor', hu: 'Drón Páncél' }, desc: { en: 'Increases drone durability.', hu: 'Növeli a drónok életerejét.' }, baseCost: 1000 },
+            { id: 'damage', title: { en: 'Drone Ordnance', hu: 'Drón Fegyverzet' }, desc: { en: 'Higher drone firepower.', hu: 'Nagyobb drón sebzés.' }, baseCost: 1500 },
         ];
 
         let isRunning = false;
+        let isPaused = false;
         let score = 0;
         let sessionCoins = 0;
         let level = 1;
         let shake = 0;
         let frameCount = 0;
         let lastTime = 0;
-        let gridOffset = 0;
 
         let player = null;
         let projectiles = [];
@@ -361,10 +502,12 @@
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playS(f, t, d, v = 0.1, r = true) {
             if (!audioCtx) return;
+            const globalVol = stats.settings.volume / 100;
+            if (globalVol <= 0) return;
             const o = audioCtx.createOscillator(), g = audioCtx.createGain();
             o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
             if (r) o.frequency.exponentialRampToValueAtTime(f / 4, audioCtx.currentTime + d);
-            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.setValueAtTime(v * globalVol, audioCtx.currentTime);
             g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
             o.connect(g); g.connect(audioCtx.destination);
             o.start(); o.stop(audioCtx.currentTime + d);
@@ -384,11 +527,71 @@
             localStorage.setItem(appId + '_coins', stats.coins);
             localStorage.setItem(appId + '_upgrades', JSON.stringify(stats.upgrades));
             localStorage.setItem(appId + '_bottech', JSON.stringify(stats.botTech));
+            localStorage.setItem(appId + '_settings', JSON.stringify(stats.settings));
             updateLobbyUI();
+            applyTranslations();
+        }
+
+        function setLanguage(lang) {
+            stats.settings.lang = lang;
+            saveStats();
+        }
+
+        function updateVolume(val) {
+            stats.settings.volume = parseInt(val);
+            document.getElementById('vol-val').innerText = val + '%';
+            saveStats();
+        }
+
+        function toggleSettings(show) {
+            settingsMenu.style.display = show ? 'flex' : 'none';
+            if (show && isRunning && !isPaused) togglePause();
+        }
+
+        function toggleInfo(show) {
+            infoOverlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function togglePause() {
+            if (!isRunning) return;
+            isPaused = !isPaused;
+            pauseMenu.style.display = isPaused ? 'flex' : 'none';
+            document.getElementById('pause-icon').className = isPaused ? 'fas fa-play' : 'fas fa-pause';
+        }
+
+        function applyTranslations() {
+            const lang = stats.settings.lang;
+            const t = translations[lang];
+            
+            document.querySelectorAll('.t-engage').forEach(el => el.innerText = t.engage);
+            document.querySelectorAll('.t-upgrades').forEach(el => el.innerText = t.upgrades);
+            document.querySelectorAll('.t-settings').forEach(el => el.innerText = t.settings);
+            document.querySelectorAll('.t-credits-unit').forEach(el => el.innerText = t.creditsUnit);
+            document.querySelectorAll('.t-back').forEach(el => el.innerText = t.back);
+            document.querySelectorAll('.t-creators').forEach(el => el.innerText = t.creators);
+            document.querySelectorAll('.t-volume').forEach(el => el.innerText = t.volume);
+            document.querySelectorAll('.t-language').forEach(el => el.innerText = t.language);
+            document.querySelectorAll('.t-tech-hub').forEach(el => el.innerText = t.techHub);
+            document.querySelectorAll('.t-tab-chassis').forEach(el => el.innerText = t.tabChassis);
+            document.querySelectorAll('.t-failure').forEach(el => el.innerText = t.failure);
+            document.querySelectorAll('.t-reboot').forEach(el => el.innerText = t.reboot);
+            document.querySelectorAll('.t-terminal').forEach(el => el.innerText = t.terminal);
+            document.querySelectorAll('.t-integrity').forEach(el => el.innerText = t.integrity);
+            document.querySelectorAll('.t-shield').forEach(el => el.innerText = t.shield);
+            document.querySelectorAll('.t-threat').forEach(el => el.innerText = t.threat);
+            document.querySelectorAll('.t-paused').forEach(el => el.innerText = t.paused);
+            document.querySelectorAll('.t-resume').forEach(el => el.innerText = t.resume);
+
+            document.getElementById('lang-en').className = `flex-1 py-2 border rounded transition-all ${lang === 'en' ? 'border-blue-500 bg-blue-500/20 text-blue-400' : 'border-slate-700 bg-white/5'}`;
+            document.getElementById('lang-hu').className = `flex-1 py-2 border rounded transition-all ${lang === 'hu' ? 'border-blue-500 bg-blue-500/20 text-blue-400' : 'border-slate-700 bg-white/5'}`;
+            
+            document.getElementById('volume-slider').value = stats.settings.volume;
+            document.getElementById('vol-val').innerText = stats.settings.volume + '%';
         }
 
         function showWaveAlert(n) {
-            waveAlert.innerText = `PHASE ${n}`;
+            const lang = stats.settings.lang;
+            waveAlert.innerText = `${translations[lang].phase} ${n}`;
             waveAlert.classList.remove('animate-wave');
             void waveAlert.offsetWidth;
             waveAlert.classList.add('animate-wave');
@@ -403,6 +606,8 @@
         }
 
         function updateLobbyUI() {
+            const lang = stats.settings.lang;
+            const t = translations[lang];
             document.getElementById('global-coins').innerText = stats.coins.toLocaleString();
             document.getElementById('lobby-coins').innerText = stats.coins.toLocaleString();
             
@@ -413,17 +618,17 @@
                 const cost = level * up.baseCost;
                 pCont.innerHTML += `
                     <div class="upgrade-card">
-                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm">${up.title}</span><span class="text-blue-400 font-bold">LVL ${level}</span></div>
-                        <p class="text-[11px] text-slate-400 leading-snug">${up.desc}</p>
-                        <button onclick="buyUpgrade('${up.id}')" ${stats.coins < cost ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2">Cost: ${cost}</button>
+                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm">${up.title[lang]}</span><span class="text-blue-400 font-bold">LVL ${level}</span></div>
+                        <p class="text-[11px] text-slate-400 leading-snug">${up.desc[lang]}</p>
+                        <button onclick="buyUpgrade('${up.id}')" ${stats.coins < cost ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2">${t.cost}: ${cost}</button>
                     </div>`;
             });
 
             if (!stats.botTech.unlocked) {
                 pCont.innerHTML += `
                     <div class="upgrade-card border-purple-500/50">
-                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm text-purple-400">Drone Uplink</span><span class="text-purple-400 font-bold">LOCKED</span></div>
-                        <button onclick="buyBotUnlock()" ${stats.coins < 2500 ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2 border-purple-500 text-purple-500">Enable: 2500</button>
+                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm text-purple-400">${t.droneUplink}</span><span class="text-purple-400 font-bold">${t.locked}</span></div>
+                        <button onclick="buyBotUnlock()" ${stats.coins < 2500 ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2 border-purple-500 text-purple-500">${t.enable}: 2500</button>
                     </div>`;
             }
 
@@ -434,9 +639,9 @@
                 const cost = level * up.baseCost;
                 bCont.innerHTML += `
                     <div class="upgrade-card">
-                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm text-purple-400">${up.title}</span><span class="text-purple-400 font-bold">LVL ${level}</span></div>
-                        <p class="text-[11px] text-slate-400 leading-snug">${up.desc}</p>
-                        <button onclick="buyBotUpgrade('${up.id}')" ${stats.coins < cost ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2 border-purple-500 text-purple-500">Cost: ${cost}</button>
+                        <div class="flex justify-between items-center"><span class="font-bold uppercase text-sm text-purple-400">${up.title[lang]}</span><span class="text-purple-400 font-bold">LVL ${level}</span></div>
+                        <p class="text-[11px] text-slate-400 leading-snug">${up.desc[lang]}</p>
+                        <button onclick="buyBotUpgrade('${up.id}')" ${stats.coins < cost ? 'disabled' : ''} class="neon-btn text-xs py-2 mt-2 border-purple-500 text-purple-500">${t.cost}: ${cost}</button>
                     </div>`;
             });
 
@@ -470,7 +675,8 @@
                 this.maxShield = (stats.upgrades.shield - 1) * 40;
                 this.shield = this.maxShield;
                 this.baseSpeed = 4.5 + (stats.upgrades.speed - 1) * 0.45;
-                this.fireRate = Math.max(5, 12 - (stats.upgrades.fire - 1));
+                // Alapból lassabb lövés (22-ről indul)
+                this.fireRate = Math.max(6, 22 - (stats.upgrades.fire - 1) * 1.5);
                 this.magnetRadius = 80 + (stats.upgrades.magnet - 1) * 45;
                 this.dmgMult = 1 + (stats.upgrades.damage - 1) * 0.4;
                 this.angle = 0; this.lastShot = 0; 
@@ -551,24 +757,20 @@
                 this.dmgMult = 0.6 + (stats.botTech.damage - 1) * 0.35;
                 this.fireRate = 50; this.lastShot = 0;
                 this.x = player.x; this.y = player.y;
-                
-                // Bot Típusok: 0: Orbiter, 1: Roamer, 2: Rammer
                 this.type = index % 3;
                 this.orbitDist = 60;
                 this.angleOffset = (Math.PI * 2 / stats.botTech.count) * index;
-                
-                // Roamer adatok
                 this.targetPos = { x: Math.random() * canvas.width, y: Math.random() * canvas.height };
                 this.roamTimer = 0;
             }
             update(dt) {
-                if (this.type === 0) { // Orbiter: Kering a játékos körül
+                if (this.type === 0) {
                     const tx = player.x + Math.cos(frameCount * 0.04 + this.angleOffset) * this.orbitDist;
                     const ty = player.y + Math.sin(frameCount * 0.04 + this.angleOffset) * this.orbitDist;
                     this.x += (tx - this.x) * 0.12 * dt;
                     this.y += (ty - this.y) * 0.12 * dt;
                 } 
-                else if (this.type === 1) { // Roamer: Véletlenszerű mozgás
+                else if (this.type === 1) {
                     const dToTarget = dist(this.x, this.y, this.targetPos.x, this.targetPos.y);
                     if (dToTarget < 20 || this.roamTimer <= 0) {
                         this.targetPos = { x: Math.random() * canvas.width, y: Math.random() * canvas.height };
@@ -579,7 +781,7 @@
                     this.y += Math.sin(a) * 3 * dt;
                     this.roamTimer -= dt;
                 }
-                else { // Rammer (Interceptor): Közvetlen támadás
+                else {
                     let near = null, md = 500;
                     enemies.forEach(e => { 
                         const d = dist(this.x, this.y, e.x, e.y); 
@@ -591,17 +793,15 @@
                         this.y += Math.sin(a) * 6 * dt;
                         if (md < this.radius + near.radius) {
                             near.hp -= 20 * this.dmgMult;
-                            this.hp -= 10; // Ramming damage a botnak is
+                            this.hp -= 10;
                             if (frameCount % 10 === 0) sfx.hit();
                         }
                     } else {
-                        // Ha nincs ellenség, visszatér a játékoshoz
                         const a = Math.atan2(player.y - this.y, player.x - this.x);
                         this.x += Math.cos(a) * 4 * dt; this.y += Math.sin(a) * 4 * dt;
                     }
                 }
 
-                // Lövöldözés (csak az Orbiter és Roamer lő)
                 if (this.type !== 2) {
                     let nearShoot = null, mdShoot = 350;
                     enemies.forEach(e => { 
@@ -621,7 +821,7 @@
                 ctx.save(); ctx.translate(this.x, this.y); 
                 ctx.shadowBlur = 10; ctx.shadowColor = colors[this.type]; ctx.fillStyle = colors[this.type];
                 ctx.beginPath(); 
-                if (this.type === 2) { // Rammer egy háromszög
+                if (this.type === 2) { 
                     ctx.rotate(frameCount * 0.1);
                     ctx.moveTo(12, 0); ctx.lineTo(-8, -8); ctx.lineTo(-8, 8);
                 } else {
@@ -772,8 +972,8 @@
         function startGame() {
             initAudio(); player = new Player(); enemies = []; projectiles = []; particles = []; pickups = []; bots = []; botRespawnQueue = [];
             if (stats.botTech.unlocked) { for (let i = 0; i < stats.botTech.count; i++) bots.push(new Bot(i)); }
-            score = 0; sessionCoins = 0; level = 1; isRunning = true; lastTime = performance.now();
-            menu.style.display = 'none'; gameOverScreen.style.display = 'none'; hud.style.display = 'flex';
+            score = 0; sessionCoins = 0; level = 1; isRunning = true; isPaused = false; lastTime = performance.now();
+            menu.style.display = 'none'; gameOverScreen.style.display = 'none'; pauseMenu.style.display = 'none'; hud.style.display = 'flex';
             if (isTouch) { document.getElementById('move-joystick').style.display = 'block'; document.getElementById('aim-joystick').style.display = 'block'; }
             showWaveAlert(1);
         }
@@ -785,18 +985,24 @@
             gameOverScreen.style.display = 'flex'; setTimeout(()=>gameOverScreen.style.opacity = '1', 50); hud.style.display = 'none';
         }
 
-        function returnToMenu() { gameOverScreen.style.display='none'; menu.style.display='flex'; updateLobbyUI(); }
+        function returnToMenu() { 
+            gameOverScreen.style.display='none'; 
+            pauseMenu.style.display='none';
+            isRunning = false;
+            menu.style.display='flex'; 
+            updateLobbyUI(); 
+            applyTranslations();
+        }
 
         function loop(timestamp) {
-            const dt = (timestamp - lastTime) / (1000 / 60); // 60 FPS alapú delta
+            const dt = (timestamp - lastTime) / (1000 / 60);
             lastTime = timestamp;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (isRunning) {
+            if (isRunning && !isPaused) {
                 frameCount++; spawn();
                 
-                // Bot Respawn kezelő (10 sec = 600 frame 60FPS-nél)
                 botRespawnQueue.forEach((item, idx) => {
                     item.timer -= dt;
                     if (item.timer <= 0) {
@@ -813,12 +1019,15 @@
                     b.update(dt); b.draw(); 
                     if (b.hp <= 0) { 
                         createExplosion(b.x, b.y, '#bc13fe', 20); 
-                        botRespawnQueue.push({ index: b.index, timer: 600 }); // 10 sec respawn
+                        botRespawnQueue.push({ index: b.index, timer: 600 });
                         bots.splice(i, 1); sfx.explosion(); 
                     } 
                 });
                 
-                if (stats.botTech.unlocked) document.getElementById('bot-status').innerText = `Drones: ${bots.length}/${stats.botTech.count} (Wait: ${botRespawnQueue.length})`;
+                if (stats.botTech.unlocked) {
+                    const lang = stats.settings.lang;
+                    document.getElementById('bot-status').innerText = `Drones: ${bots.length}/${stats.botTech.count}`;
+                }
                 
                 enemies.forEach((e, i) => { e.update(dt); e.draw(); if(e.hp <= 0) enemies.splice(i,1); });
                 projectiles.forEach((p, i) => { p.update(dt); p.draw(); if(p.life <= 0) projectiles.splice(i,1); });
@@ -826,11 +1035,24 @@
                 particles.forEach((p, i) => { p.update(dt); p.draw(); if(p.life <= 0) particles.splice(i,1); });
                 
                 ctx.restore(); if(player.hp <= 0) endGame();
+            } else if (isPaused) {
+                // Álló helyzet rajzolása szünet alatt
+                player.draw();
+                bots.forEach(b => b.draw());
+                enemies.forEach(e => e.draw());
+                projectiles.forEach(p => p.draw());
+                pickups.forEach(p => p.draw());
+                particles.forEach(p => p.draw());
             }
+
             requestAnimationFrame(loop);
         }
 
-        window.onkeydown = e => keys[e.code] = true; window.onkeyup = e => keys[e.code] = false;
+        window.onkeydown = e => {
+            keys[e.code] = true;
+            if (e.code === 'Escape') togglePause();
+        }
+        window.onkeyup = e => keys[e.code] = false;
         window.onmousemove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
         window.onmousedown = () => mouse.down = true; window.onmouseup = () => mouse.down = false;
         if (isTouch) {
@@ -856,7 +1078,10 @@
             window.addEventListener('touchend', () => { moveJoy.active = false; moveJoy.dirX = 0; moveJoy.dirY = 0; aimJoy.active = false; mouse.down = false; });
         }
         window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-        window.onresize(); requestAnimationFrame(loop); updateLobbyUI();
+        window.onresize(); 
+        requestAnimationFrame(loop); 
+        applyTranslations();
+        updateLobbyUI();
     </script>
 </body>
 </html>
