@@ -320,6 +320,29 @@ function renderStoryMissions() {
     });
 }
 
+function updateBoostVisuals() {
+    const container = document.getElementById('boost-container');
+    if (!container) return;
+
+    let html = '';
+    if (player.overdrive > 0) {
+        const percent = (player.overdrive / 400) * 100;
+        html += `<div class="w-32 h-3 bg-slate-900 border border-yellow-500 rounded-full overflow-hidden mb-2 shadow-[0_0_10px_#fff200]">
+                    <div class="h-full bg-yellow-400 transition-all" style="width: ${percent}%"></div>
+                 </div>`;
+    }
+    if (player.tripleShot > 0) {
+        const percent = (player.tripleShot / 400) * 100;
+        html += `<div class="w-32 h-3 bg-slate-900 border border-pink-500 rounded-full overflow-hidden shadow-[0_0_10px_#ff00ff]">
+                    <div class="h-full bg-pink-500 transition-all" style="width: ${percent}%"></div>
+                 </div>`;
+    }
+    container.innerHTML = html;
+}
+
+
+
+
 // --- Játék Objektumok (Osztályok) ---
 class Player {
     constructor() {
@@ -431,6 +454,7 @@ class Bot {
                 if (md < this.radius + near.radius) {
                     near.hp -= 5 * this.dmgMult;
                     this.hp -= 2;
+                    if (near.hp <= 0) handleEnemyDeath(near);
                     if (frameCount % 5 === 0) sfx.hit();
                 }
             } else {
@@ -492,7 +516,10 @@ class Enemy {
         }
 
         if (d < this.radius + target.radius) {
-            target.takeDamage(15); this.hp = 0; createExplosion(this.x, this.y, this.color, 12);
+            target.takeDamage(15); 
+            this.hp = 0; 
+            createExplosion(this.x, this.y, this.color, 12);
+            handleEnemyDeath(this);
         }
     }
     shoot(a) {
@@ -525,19 +552,7 @@ class Projectile {
                 if (dist(this.x, this.y, e.x, e.y) < e.radius + this.radius) {
                     e.hp -= this.damage; this.life = 0;
                     if (e.hp <= 0) {
-                        score += 100; sessionCoins += e.coinValue;
-                        if (stats.history) {
-                            stats.history.totalKills++;
-                            stats.history.allTimeEarnings += e.coinValue;
-                        }
-                        sfx.explosion();
-                        createExplosion(e.x, e.y, e.color, e.isBoss ? 40 : 15);
-                        if (Math.random() < 0.25) pickups.push(new Pickup(e.x, e.y, Math.random() < 0.5 ? 'H' : (Math.random() < 0.8 ? 'O' : 'T')));
-                        if (gameMode === 'story') {
-                            if (currentMission.goal === 'kills') missionCounter++;
-                            if (currentMission.goal === 'boss' && e.isBoss) missionCounter++;
-                        }
-                        checkProgression();
+                        handleEnemyDeath(e);
                     }
                 }
             });
@@ -674,6 +689,10 @@ function loop(timestamp) {
     const dt = Math.min(2, (timestamp - lastTime) / (1000 / 60));
     lastTime = timestamp;
     frameCount++;
+    score += 0.2 * dt;
+    document.getElementById('score-container').innerText = Math.floor(score).toString().padStart(6, '0');
+
+    updateBoostVisuals();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (gameMode === 'story' && currentMission.goal === 'survive') {
@@ -728,4 +747,25 @@ function togglePause() {
     document.getElementById('pause-menu').style.display = isPaused ? 'flex' : 'none';
     document.getElementById('pause-icon').className = isPaused ? 'fas fa-play' : 'fas fa-pause';
     if (!isPaused) { lastTime = performance.now(); requestAnimationFrame(loop); }
+}
+
+function handleEnemyDeath(e) {
+    score += 100;
+    sessionCoins += e.coinValue;
+    if (stats.history) {
+        stats.history.totalKills++;
+        stats.history.allTimeEarnings += e.coinValue;
+    }
+    sfx.explosion();
+    createExplosion(e.x, e.y, e.color, e.isBoss ? 40 : 15);
+    
+    if (Math.random() < 0.25) {
+        pickups.push(new Pickup(e.x, e.y, Math.random() < 0.5 ? 'H' : (Math.random() < 0.8 ? 'O' : 'T')));
+    }
+
+    if (gameMode === 'story') {
+        if (currentMission.goal === 'kills') missionCounter++;
+        if (currentMission.goal === 'boss' && e.isBoss) missionCounter++;
+    }
+    checkProgression();
 }

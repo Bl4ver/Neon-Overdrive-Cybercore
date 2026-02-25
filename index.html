@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,9 +11,10 @@
     <script src="script.js"></script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1572555874133185"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 
 </head>
+
 <body class="custom-scrollbar">
 
     <canvas id="game-canvas"></canvas>
@@ -22,28 +24,37 @@
     <!-- Főmenü -->
     <div id="main-menu" class="menu-overlay">
         <div class="mb-8 flex flex-col items-center">
-            <h1 class="orbitron text-7xl md:text-8xl font-black glitch-text tracking-tighter italic uppercase leading-none">Neon</h1>
-            <h1 class="orbitron text-5xl md:text-6xl font-black neon-text-blue tracking-widest uppercase leading-none">Overdrive</h1>
+            <h1
+                class="orbitron text-7xl md:text-8xl font-black glitch-text tracking-tighter italic uppercase leading-none">
+                Neon</h1>
+            <h1 class="orbitron text-5xl md:text-6xl font-black neon-text-blue tracking-widest uppercase leading-none">
+                Overdrive</h1>
             <p class="text-[10px] tracking-[0.5em] text-slate-500 mt-2 font-bold uppercase">Cybercore Protocol v3.1</p>
         </div>
-        
+
         <div class="flex flex-wrap gap-4 mb-10 w-full max-w-2xl justify-center px-4">
             <button onclick="startGame('endless')" class="neon-btn orbitron px-12 t-engage">Végtelen</button>
-            <button onclick="openStory()" class="neon-btn orbitron border-pink-500 text-pink-500 hover:bg-pink-500 t-story">Történet</button>
-            <button onclick="openLobby()" class="neon-btn orbitron border-purple-500 text-purple-500 hover:bg-purple-500 t-upgrades">Fejlesztések</button>
-            <button onclick="openStats()" class="neon-btn orbitron border-yellow-500 text-yellow-500 hover:bg-yellow-500 t-stats">Statisztika</button>
-            <button onclick="toggleSettings(true)" class="neon-btn orbitron border-slate-500 text-slate-500 hover:bg-slate-500 t-settings">Beállítások</button>
+            <button onclick="openStory()"
+                class="neon-btn orbitron border-pink-500 text-pink-500 hover:bg-pink-500 t-story">Történet</button>
+            <button onclick="openLobby()"
+                class="neon-btn orbitron border-purple-500 text-purple-500 hover:bg-purple-500 t-upgrades">Fejlesztések</button>
+            <button onclick="openStats()"
+                class="neon-btn orbitron border-yellow-500 text-yellow-500 hover:bg-yellow-500 t-stats">Statisztika</button>
+            <button onclick="toggleSettings(true)"
+                class="neon-btn orbitron border-slate-500 text-slate-500 hover:bg-slate-500 t-settings">Beállítások</button>
         </div>
 
         <div class="currency-display orbitron text-2xl mb-8 flex items-center">
-            <i class="fas fa-coins mr-3 text-yellow-400"></i> <span id="global-coins">0</span> <span class="text-xs ml-2 opacity-60 t-creditsUnit">KREDIT</span>
+            <i class="fas fa-coins mr-3 text-yellow-400"></i> <span id="global-coins">0</span> <span
+                class="text-xs ml-2 opacity-60 t-creditsUnit">KREDIT</span>
         </div>
     </div>
 
     <!-- Statisztika Menü -->
     <div id="stats-menu" class="menu-overlay" style="display: none;">
         <h2 class="orbitron text-4xl font-black mb-8 neon-text-blue uppercase italic t-statsTitle">Rendszer Napló</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl px-6 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl px-6 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-xl">
             <div class="flex flex-col">
                 <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statKills">Megsemmisítések</span>
                 <span id="stat-total-kills" class="text-3xl font-bold orbitron">0</span>
@@ -53,21 +64,26 @@
                 <span id="stat-total-money" class="text-3xl font-bold orbitron text-yellow-400">0</span>
             </div>
             <div class="flex flex-col">
-                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeEndless">Végtelen rekordidő</span>
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeEndless">Végtelen
+                    rekordidő</span>
                 <span id="stat-time-endless" class="text-3xl font-bold orbitron text-blue-400">00:00:00</span>
             </div>
             <div class="flex flex-col">
-                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeStory">Történeti játékidő</span>
+                <span class="text-slate-400 text-[10px] uppercase tracking-widest t-statTimeStory">Történeti
+                    játékidő</span>
                 <span id="stat-time-story" class="text-3xl font-bold orbitron text-pink-400">00:00:00</span>
             </div>
         </div>
-        <button onclick="closeStats()" class="neon-btn orbitron mt-10 border-slate-500 text-slate-500 t-back">Vissza</button>
+        <button onclick="closeStats()"
+            class="neon-btn orbitron mt-10 border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
 
     <!-- Történet Mód Menü -->
     <div id="story-menu" class="menu-overlay" style="display: none;">
         <h2 class="orbitron text-4xl font-black mb-6 neon-text-pink uppercase italic t-story">Történet</h2>
-        <div id="mission-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl px-6 max-h-[60vh] overflow-y-auto custom-scrollbar mb-8"></div>
+        <div id="mission-list"
+            class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl px-6 max-h-[60vh] overflow-y-auto custom-scrollbar mb-8">
+        </div>
         <button onclick="closeStory()" class="neon-btn orbitron border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
 
@@ -75,19 +91,27 @@
     <div id="lobby-menu" class="menu-overlay" style="display: none;">
         <h2 class="orbitron text-4xl font-black mb-2 neon-text-blue uppercase italic t-techHub">Tech Központ</h2>
         <div class="flex items-center gap-6 mb-6">
-             <div class="orbitron text-xl"><i class="fas fa-coins mr-2 text-yellow-400"></i> <span id="lobby-coins">0</span></div>
-             <button id="reward-btn" onclick="startRewardProcess()" class="neon-btn py-1 px-4 text-xs border-yellow-500 text-yellow-500 hover:bg-yellow-500">
+            <div class="orbitron text-xl"><i class="fas fa-coins mr-2 text-yellow-400"></i> <span
+                    id="lobby-coins">0</span></div>
+            <button id="reward-btn" onclick="startRewardProcess()"
+                class="neon-btn py-1 px-4 text-xs border-yellow-500 text-yellow-500 hover:bg-yellow-500">
                 <i class="fas fa-satellite-dish mr-2"></i> <span class="t-uplinkBtn">ADATKAPCSOLAT (+300 CR)</span>
-             </button>
-        </div>
-        
-        <div class="flex gap-4 mb-6">
-            <button onclick="switchTab('player')" id="tab-player" class="neon-btn py-2 text-sm active t-chasisTab">Gépváz</button>
-            <button onclick="switchTab('bots')" id="tab-bots" class="neon-btn py-2 text-sm border-purple-500 text-purple-500 t-droneTab">Drón Tech</button>
+            </button>
         </div>
 
-        <div id="player-upgrades" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl px-6 max-h-[50vh] overflow-y-auto custom-scrollbar mb-8"></div>
-        <div id="bot-upgrades" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl px-6 max-h-[50vh] overflow-y-auto custom-scrollbar mb-8" style="display: none;"></div>
+        <div class="flex gap-4 mb-6">
+            <button onclick="switchTab('player')" id="tab-player"
+                class="neon-btn py-2 text-sm active t-chasisTab">Gépváz</button>
+            <button onclick="switchTab('bots')" id="tab-bots"
+                class="neon-btn py-2 text-sm border-purple-500 text-purple-500 t-droneTab">Drón Tech</button>
+        </div>
+
+        <div id="player-upgrades"
+            class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl px-6 max-h-[50vh] overflow-y-auto custom-scrollbar mb-8">
+        </div>
+        <div id="bot-upgrades"
+            class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl px-6 max-h-[50vh] overflow-y-auto custom-scrollbar mb-8"
+            style="display: none;"></div>
 
         <button onclick="closeLobby()" class="neon-btn orbitron border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
@@ -99,40 +123,55 @@
             <h3 class="orbitron text-3xl mb-2 t-uplink">Adatkapcsolat kiépítése...</h3>
             <p class="text-slate-500 mb-8 text-sm t-uplinkDesc">Titkosított adatfolyam fogadása kreditekért cserébe.</p>
             <div class="w-80 h-3 bg-white/10 rounded-full overflow-hidden mx-auto border border-white/5">
-                <div id="reward-bar" style="width: 0%; height: 100%; background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue);"></div>
+                <div id="reward-bar"
+                    style="width: 0%; height: 100%; background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue);">
+                </div>
             </div>
         </div>
     </div>
 
     <!-- HUD -->
     <div id="hud" class="ui-layer" style="display: none;">
+        <div id="boost-container" class="absolute bottom-24 left-6 flex flex-col pointer-events-none">
+        </div>
         <div class="flex justify-between items-start w-full pointer-events-none">
             <div class="flex flex-col gap-3">
                 <div class="space-y-1">
-                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-pink-500"><span class="t-integrity">Integritás</span><span id="hp-val">100%</span></div>
-                    <div class="hud-bar"><div id="hp-fill" class="bar-fill" style="width: 100%;"></div></div>
+                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-pink-500">
+                        <span class="t-integrity">Integritás</span><span id="hp-val">100%</span></div>
+                    <div class="hud-bar">
+                        <div id="hp-fill" class="bar-fill" style="width: 100%;"></div>
+                    </div>
                 </div>
                 <div class="space-y-1">
-                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-blue-400"><span class="t-shield">Pajzs</span><span id="shield-val">0%</span></div>
-                    <div class="hud-bar"><div id="shield-fill" class="bar-fill" style="width: 0%;"></div></div>
+                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest text-blue-400">
+                        <span class="t-shield">Pajzs</span><span id="shield-val">0%</span></div>
+                    <div class="hud-bar">
+                        <div id="shield-fill" class="bar-fill" style="width: 0%;"></div>
+                    </div>
                 </div>
-                <div id="mission-objective-ui" class="mt-4 p-3 bg-black/60 border-l-4 border-pink-500 hidden backdrop-blur-md">
+                <div id="mission-objective-ui"
+                    class="mt-4 p-3 bg-black/60 border-l-4 border-pink-500 hidden backdrop-blur-md">
                     <div class="text-[10px] text-pink-500 font-black uppercase t-objective">Feladat</div>
-                    <div id="objective-text" class="text-xs font-bold text-white uppercase tracking-tight">Cél elérése...</div>
+                    <div id="objective-text" class="text-xs font-bold text-white uppercase tracking-tight">Cél
+                        elérése...</div>
                 </div>
             </div>
-            
+
             <div class="flex flex-col items-center">
                 <div id="score-container" class="orbitron text-4xl font-black neon-text-blue">000000</div>
-                <div class="currency-display text-base mt-1 tracking-[0.2em] font-bold"><i class="fas fa-coins mr-1 text-yellow-400"></i> <span id="hud-coins">0</span></div>
+                <div class="currency-display text-base mt-1 tracking-[0.2em] font-bold"><i
+                        class="fas fa-coins mr-1 text-yellow-400"></i> <span id="hud-coins">0</span></div>
             </div>
 
             <div class="flex flex-col items-end gap-2">
                 <div class="flex gap-2">
-                    <button onclick="togglePause()" class="pointer-events-auto bg-white/5 border border-white/10 w-10 h-10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                    <button onclick="togglePause()"
+                        class="pointer-events-auto bg-white/5 border border-white/10 w-10 h-10 flex items-center justify-center hover:bg-white/10 transition-colors">
                         <i id="pause-icon" class="fas fa-pause"></i>
                     </button>
-                    <div class="text-2xl font-black text-white orbitron bg-white/5 px-4 py-1 rounded-sm skew-x-[-10deg]" id="level-display">LVL 01</div>
+                    <div class="text-2xl font-black text-white orbitron bg-white/5 px-4 py-1 rounded-sm skew-x-[-10deg]"
+                        id="level-display">LVL 01</div>
                 </div>
                 <div id="bot-status" class="text-[9px] text-purple-400 uppercase font-black tracking-tighter"></div>
             </div>
@@ -141,12 +180,14 @@
 
     <!-- Játék vége -->
     <div id="game-over" class="menu-overlay" style="display: none; opacity: 0;">
-        <h2 id="end-title" class="orbitron text-6xl font-black mb-4 text-red-500 uppercase italic t-failure">Rendszerhiba</h2>
+        <h2 id="end-title" class="orbitron text-6xl font-black mb-4 text-red-500 uppercase italic t-failure">
+            Rendszerhiba</h2>
         <div id="final-score" class="text-3xl mb-2 orbitron">000,000</div>
         <div id="session-coins" class="text-xl mb-12 orbitron text-yellow-400">+0 KREDIT</div>
         <div class="flex flex-col gap-4 w-full max-w-xs">
             <button onclick="restartGame()" class="neon-btn orbitron w-full t-reboot">Újraindítás</button>
-            <button onclick="returnToMenu()" class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-terminal">Menü</button>
+            <button onclick="returnToMenu()"
+                class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-terminal">Menü</button>
         </div>
     </div>
 
@@ -155,8 +196,10 @@
         <h2 class="orbitron text-5xl font-black mb-10 text-white uppercase italic t-paused">Szünet</h2>
         <div class="flex flex-col gap-4 w-full max-w-xs px-6">
             <button onclick="togglePause()" class="neon-btn orbitron w-full t-resume">Folytatás</button>
-            <button onclick="toggleSettings(true)" class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-settings">Beállítások</button>
-            <button onclick="returnToMenu()" class="neon-btn orbitron border-red-500 text-red-500 w-full t-terminal">Főmenü</button>
+            <button onclick="toggleSettings(true)"
+                class="neon-btn orbitron border-slate-500 text-slate-500 w-full t-settings">Beállítások</button>
+            <button onclick="returnToMenu()"
+                class="neon-btn orbitron border-red-500 text-red-500 w-full t-terminal">Főmenü</button>
         </div>
     </div>
 
@@ -174,12 +217,16 @@
             <div class="flex flex-col gap-3">
                 <div class="uppercase font-bold text-xs tracking-widest t-language">Nyelv</div>
                 <div class="flex gap-2">
-                    <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">English</button>
-                    <button onclick="setLanguage('hu')" id="lang-hu" class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">Magyar</button>
+                    <button onclick="setLanguage('en')" id="lang-en"
+                        class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">English</button>
+                    <button onclick="setLanguage('hu')" id="lang-hu"
+                        class="flex-1 py-2 border border-slate-700 bg-white/5 rounded hover:border-blue-500 transition-all">Magyar</button>
                 </div>
             </div>
         </div>
-        <button onclick="toggleSettings(false)" class="neon-btn orbitron mt-12 border-slate-500 text-slate-500 t-back">Vissza</button>
+        <button onclick="toggleSettings(false)"
+            class="neon-btn orbitron mt-12 border-slate-500 text-slate-500 t-back">Vissza</button>
     </div>
 </body>
+
 </html>
